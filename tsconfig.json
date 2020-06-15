@@ -1,0 +1,12 @@
+{
+    "version": "2.4.2",
+    "compilerOptions": {
+        "target": "es2019",
+        "module": "commonjs",
+        "sourceMap": true,
+        "outDir": "out"
+    },
+    "exclude": [
+        "./node_modules/**/*",
+    ]
+}
