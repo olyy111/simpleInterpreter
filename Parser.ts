@@ -13,7 +13,7 @@ export class Program extends AST {
 }
 export class Block extends AST {
   compound:  Compound;
-  decls: Array<any>
+  decls: Array<VarDecl | ProcDecl>
   constructor(compound: Compound, decls: Array<any>) {
     super()
     this.compound = compound
@@ -61,9 +61,9 @@ export class Compound extends AST {
 }
 
 export class Assign extends AST {
-  left: AST;
-  right: AST;
-  constructor(left: AST, right: AST) {
+  left: Var;
+  right: BinOp;
+  constructor(left: Var, right: BinOp) {
     super()
     this.left = left
     this.right = right
@@ -89,10 +89,10 @@ export class Type extends AST {
 }
 export class NoOp extends AST {}
 export class BinOp extends AST {
-  left: any
+  left: Var
   right: any
   op: Token
-  constructor(left: any, right: any, op: Token) {
+  constructor(left: Var, right: any, op: Token) {
     super()
     this.left = left
     this.right = right

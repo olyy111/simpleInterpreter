@@ -5,7 +5,7 @@ export class NodeVisitor {
     const instProto = Object.getPrototypeOf(this)
     const methedName = 'visit_' + nodeType
     if (instProto.hasOwnProperty(methedName)) {
-      this[methedName](node)
+      return this[methedName](node)
     } else {
       throw new ReferenceError(`the designated visit method '${methedName}' name does not exist`)
     }
