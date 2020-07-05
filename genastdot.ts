@@ -5,7 +5,7 @@ import { Command } from 'commander'
 import commander = require('commander');
 import { 
   Program, Block, Compound, Assign, NoOp, Var, BinOp, Num, Type, 
-  VarDecl, Param, ProcDecl
+  VarDecl, Param, ProcDecl, ProcCall
 } from './Parser'
 import * as fs from 'fs'
 
@@ -61,7 +61,6 @@ export class ASTVisualizer extends  NodeVisitor {
     this.genArrow(node, node.var_node)
   }
   visit_ProcDecl(node: ProcDecl) {
-    console.log('node.name', node)
     this.genNode(node, `ProcDecl: ${node.name}`)
     for (const formalParam of node.formalParams) {
       this.visit(formalParam)
@@ -69,6 +68,13 @@ export class ASTVisualizer extends  NodeVisitor {
     }
     this.visit(node.blockNode)
     this.genArrow(node, node.blockNode)
+  }
+  visit_ProcCall(node: ProcCall) {
+    this.genNode(node, `ProcCall: ${node.name}`)
+    for (const actualParam of node.actualParams) {
+      this.visit(actualParam)
+      this.genArrow(node, actualParam)
+    }
   }
   visit_Param(node: Param) {
     this.genNode(node, 'Param')

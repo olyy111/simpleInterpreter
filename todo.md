@@ -14,11 +14,11 @@
   - [x] 解析成AST
   - [x] ast dot生成器
 - [x] program block compound 解析
-- [ ] declaration
+- [x] declaration
   - [x] Var
-  - [ ] Procedure
+  - [x] Procedure
     - [x] Procedure的定义
-    - [ ] 调用Procedure
+    - [x] 调用Procedure
 
 ## Symbol
 - [x] Symbol
@@ -37,9 +37,19 @@ non-terminal:
 - [x] 实现各个AST节点的visit方法
   - [x] program
     - [x] 先构建一个最简单的program 的 scope
-  - [x] procedure
+  - [x] procedure define
     - [x] 构建scope
     - [x] 构建scope chain
+  - [x] procedure call
+    - [x] 在semantic analysis 的时候分析出他所对应的procSymbol
+- [ ] 语义检查
+  - [x] 参数个数不一样, ❌
 ## Interpreter
   - [x] 支持四则混合运算
   - [ ] 运行时构建stack
+    - [ ] 创建CallStack, ActiveRecord定义
+
+## 其余
+- [x] 实现错误分类: ParserError, SemanticError, LexerError等
+- [x] 控制stack和scope的log打印开关
+- [ ] 继承的lookup typescript实现

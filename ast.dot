@@ -4,85 +4,59 @@ digraph astgraph {
   edge [arrowsize=.5]
   node0 [label="Main"]
   node1 [label="Block"]
-  node2 [label="VarDecl"]
-  node3 [label="INTEGER"]
-  node4 [label="y"]
+  node2 [label="ProcDecl: Alpha"]
+  node3 [label="Param"]
+  node4 [label="a"]
+  node5 [label="INTEGER"]
+  node3 -> node4
+  node3 -> node5
   node2 -> node3
-  node2 -> node4
-  node1 -> node2
-  node5 [label="VarDecl"]
-  node6 [label="REAL"]
-  node7 [label="a"]
-  node5 -> node6
-  node5 -> node7
-  node1 -> node5
-  node8 [label="VarDecl"]
-  node9 [label="REAL"]
-  node10 [label="b"]
-  node8 -> node9
-  node8 -> node10
-  node1 -> node8
-  node11 [label="VarDecl"]
-  node12 [label="REAL"]
-  node13 [label="c"]
-  node11 -> node12
-  node11 -> node13
-  node1 -> node11
-  node14 [label="ProcDecl: MyProcedure"]
-  node15 [label="Param"]
-  node16 [label="m"]
-  node17 [label="INTEGER"]
-  node15 -> node16
-  node15 -> node17
+  node6 [label="Param"]
+  node7 [label="b"]
+  node8 [label="INTEGER"]
+  node6 -> node7
+  node6 -> node8
+  node2 -> node6
+  node9 [label="Block"]
+  node10 [label="VarDecl"]
+  node11 [label="INTEGER"]
+  node12 [label="x"]
+  node10 -> node11
+  node10 -> node12
+  node9 -> node10
+  node13 [label="Compund"]
+  node14 [label="ASSIGN"]
+  node15 [label="x"]
+  node16 [label="*"]
+  node17 [label="+"]
+  node18 [label="a"]
+  node19 [label="b"]
+  node17 -> node18
+  node17 -> node19
+  node20 [label="2"]
+  node16 -> node17
+  node16 -> node20
   node14 -> node15
-  node18 [label="Param"]
-  node19 [label="n"]
-  node20 [label="INTEGER"]
-  node18 -> node19
-  node18 -> node20
-  node14 -> node18
-  node21 [label="Param"]
-  node22 [label="a"]
-  node23 [label="REAL"]
-  node21 -> node22
-  node21 -> node23
-  node14 -> node21
-  node24 [label="Block"]
-  node25 [label="VarDecl"]
-  node26 [label="INTEGER"]
-  node27 [label="x"]
-  node25 -> node26
-  node25 -> node27
+  node14 -> node16
+  node13 -> node14
+  node21 [label="NoOp"]
+  node13 -> node21
+  node9 -> node13
+  node2 -> node9
+  node1 -> node2
+  node22 [label="Compund"]
+  node23 [label="ProcCall: Alpha"]
+  node24 [label="+"]
+  node25 [label="3"]
+  node26 [label="5"]
   node24 -> node25
-  node28 [label="Compund"]
-  node29 [label="ASSIGN"]
-  node30 [label="x"]
-  node31 [label="+"]
-  node32 [label="3"]
-  node33 [label="4"]
-  node31 -> node32
-  node31 -> node33
-  node29 -> node30
-  node29 -> node31
-  node28 -> node29
-  node34 [label="NoOp"]
-  node28 -> node34
-  node24 -> node28
-  node14 -> node24
-  node1 -> node14
-  node35 [label="Compund"]
-  node36 [label="ASSIGN"]
-  node37 [label="y"]
-  node38 [label="+"]
-  node39 [label="3"]
-  node40 [label="5"]
-  node38 -> node39
-  node38 -> node40
-  node36 -> node37
-  node36 -> node38
-  node35 -> node36
-  node41 [label="NoOp"]
-  node35 -> node41
-  node1 -> node35
+  node24 -> node26
+  node23 -> node24
+  node27 [label="7"]
+  node23 -> node27
+  node22 -> node23
+  node28 [label="NoOp"]
+  node22 -> node28
+  node1 -> node22
   node0 -> node1
 }

@@ -1,8 +1,22 @@
-program Main;{函数嵌套,  使用作用域链查找变量}
+program Main;
 
-var y: integer;
-var a, b, c: real;
+procedure Alpha(a : integer; b : integer);
+var x : integer;
+
+   procedure Beta(a : integer; b : integer);
+   var x : integer;
+   begin
+      x := a * 10 + b * 2;
+   end;
+
+begin
+   x := (a + b ) * 2;
+   Beta(5, 10);      { procedure call }
+
+end;
+
 begin { Main }
-   y := 3 + 5;
-   a := y + 6;
+
+   Alpha(3 + 5, 7);  { procedure call }
+
 end.  { Main }

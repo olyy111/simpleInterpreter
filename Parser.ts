@@ -1,7 +1,11 @@
 import {Lexer, Token, TokenType} from './Lexer';
+import { ProcSymbol } from './symbol';
+import { ParserError } from './error'
+
 export class AST {
   [key: string]: any
 }
+
 export class Program extends AST {
   name: string;
   blockNode: Block;
@@ -39,6 +43,20 @@ export class ProcDecl extends AST {
     this.name = name
     this.formalParams = formalParams
     this.blockNode = blockNode
+  }
+}
+
+export class ProcCall extends AST {
+  name: string;
+  actualParams: Array<any>;
+  procSymbol: ProcSymbol;
+  constructor(name: string, actualParams: Array<any>) {
+    super()
+    this.name = name
+    this.actualParams = actualParams
+  }
+  setProcSymbol(symbol: ProcSymbol) {
+    this.procSymbol = symbol
   }
 }
 
@@ -99,6 +117,7 @@ export class BinOp extends AST {
     this.op = op
   }
 }
+
 export class Num extends AST {
   token: Token
   value: string
@@ -116,7 +135,8 @@ export class Parser {
     this.currentToken = this.lexer.getNextToken()
   }
   error(msg: string) {
-    throw new Error(msg)
+    throw new ParserError({msg})
+
   }
   eat(type: string) {
     if (this.currentToken.type === type) {
@@ -128,6 +148,9 @@ export class Parser {
     }
   }
   program() {
+    /**
+     *  PROGRAM ID SEMI block DOT
+     */
     this.eat(TokenType.PROGRAM.type)
     const name = this.eat(TokenType.ID.type).value
     this.eat(TokenType.SEMI.type)
@@ -135,9 +158,8 @@ export class Parser {
     this.eat(TokenType.DOT.type)
     return new Program(name, blockNode)
   }
-  block() {
+  block() { // decls compound
     const decls = this.decls()
-    // console.log('block decls', decls)
     const compound = this.compound()
     return new Block(compound, decls)
   }
@@ -148,16 +170,15 @@ export class Parser {
       this.currentToken.type === TokenType.PROCEDURE.type
     ) {
       decls = decls.concat(this.decl())
-      console.log('decls', decls)
       this.eat(TokenType.SEMI.type)
     }
     return decls
   }
-  decl() {
+  decl() { // var_decl | proc_decl
     if (this.currentToken.type === TokenType.VAR.type) { return this.var_decl() }
     else if (this.currentToken.type === TokenType.PROCEDURE.type) { return this.proc_decl() }
   }
-  var_decl() {
+  var_decl() { // VAR variable (COMMA variable)* COLON type_spec
     const var_decls = []
     this.eat(TokenType.VAR.type)
     const var_nodes = [this.variable()]
@@ -183,7 +204,6 @@ export class Parser {
     this.eat(TokenType.RPAREN.type)
     this.eat(TokenType.SEMI.type)
     const blockNode = this.block()
-    console.log('procId', procId)
     return new ProcDecl(procId.value, formalParamNodes, blockNode)
   }
   formalParamsList() {
@@ -215,7 +235,7 @@ export class Parser {
     return nodes
   }
   
-  type_sepc() {
+  type_sepc() { // INTEGER | REAL
     if (this.currentToken.type === TokenType.INTEGER.type) {
       return new Type(this.eat(TokenType.INTEGER.type))
     } 
@@ -224,15 +244,18 @@ export class Parser {
     }
   }
 
-  compound() {
+  compound() { // BEGIN stmtList END
     let children;
     this.eat(TokenType.BEGIN.type)
     children = this.stmtList()
     this.eat(TokenType.END.type)
-    console.log('children', children)
     return new Compound(children)
   }
   stmtList() {
+    /**
+     *    stmt SEMI
+     *   |  stmtList
+     */
     let nodes: Array<AST> = [this.stmt()]
     this.eat(TokenType.SEMI.type)
     if (this.currentToken.type === TokenType.BEGIN.type ||
@@ -243,13 +266,34 @@ export class Parser {
       return nodes.concat(new NoOp())
     }
   }
-  stmt() {
+  stmt() { // compound | assignStmt | procCall
     if (this.currentToken.type === TokenType.BEGIN.type) {
       return this.compound()
     }
-    else if (this.currentToken.type === TokenType.ID.type) {
+    else if (this.currentToken.type === TokenType.ID.type
+      && this.lexer.currentChar === '('
+    ) {
+      return this.procCall()
+    } else {
       return this.assignStmt()
     }
+  }
+
+  procCall() {
+    // ID LPAREN (expr (COMMA expr)*)?  RPAREN
+
+    const actualParams: Array<any> = []
+    const procName = this.eat(TokenType.ID.type).value
+    this.eat(TokenType.LPAREN.type)
+    if (this.currentToken.type !== TokenType.RPAREN.type) {
+      actualParams.push(this.expr())
+      while (this.currentToken.type === TokenType.COMMA.type) {
+        this.eat(TokenType.COMMA.type)
+        actualParams.push(this.expr())
+      }
+    }
+    this.eat(TokenType.RPAREN.type)
+    return new ProcCall(procName, actualParams)
   }
   assignStmt() {
     // variable ASSIGN expr
@@ -263,7 +307,7 @@ export class Parser {
     const idToken = this.eat(TokenType.ID.type)
     return new Var(idToken)
   }
-  expr() {
+  expr() { // term ((PLUS | MINUS) term)*
     let left = this.term()
     while (this.currentToken.type === TokenType.PLUS.type
       || this.currentToken.type === TokenType.MINUS.type
@@ -275,7 +319,7 @@ export class Parser {
     }
     return left
   }
-  term() {
+  term() { // factor ((MUL | DIV) factor)*
     let left: any = this.factor()
     while (this.currentToken.type === TokenType.MUL.type
       || this.currentToken.type === TokenType.DIV.type
@@ -288,7 +332,11 @@ export class Parser {
     return left
   }
   factor() {
-    // console.log('this.currentToken', this.currentToken)
+    /**
+     *  LPAREN expr RPAREN
+     * | variable
+     * | INTEGER_CONST
+     */
     let node;
     if (this.currentToken.type === TokenType.LPAREN.type) {
       this.eat(TokenType.LPAREN.type)
@@ -296,8 +344,7 @@ export class Parser {
       this.eat(TokenType.RPAREN.type)
     }
     else if (this.currentToken.type === TokenType.ID.type) {
-      const idToken = this.eat(TokenType.ID.type)
-      node = new Var(idToken)
+      node = this.variable()
     }
     else {
       const token = this.eat(TokenType.INTEGER_CONST.type)
