@@ -239,10 +239,10 @@
   resolved "https://registry.npm.taobao.org/@types/is/download/@types/is-0.0.21.tgz#1f4b0afe428991564abbd890844eba2458bc83e6"
   integrity sha1-H0sK/kKJkVZKu9iQhE66JFi8g+Y=
 
-"@types/node@^14.0.5":
-  version "14.0.5"
-  resolved "https://registry.npm.taobao.org/@types/node/download/@types/node-14.0.5.tgz?cache=0&sync_timestamp=1590092219164&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40types%2Fnode%2Fdownload%2F%40types%2Fnode-14.0.5.tgz#3d03acd3b3414cf67faf999aed11682ed121f22b"
-  integrity sha1-PQOs07NBTPZ/r5ma7RFoLtEh8is=
+"@types/node@^14.14.16":
+  version "14.14.16"
+  resolved "http://registry.npm.chengfayun.net/@types/node/download/@types/node-14.14.16.tgz#3cc351f8d48101deadfed4c9e4f116048d437b4b"
+  integrity sha1-PMNR+NSBAd6t/tTJ5PEWBI1De0s=
 
 ansi-styles@^3.2.1:
   version "3.2.1"

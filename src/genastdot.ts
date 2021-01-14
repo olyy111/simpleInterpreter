@@ -2,6 +2,7 @@ import { NodeVisitor } from './utils';
 import { Lexer } from './Lexer';
 import { Parser, AST } from './Parser'
 import { Command } from 'commander'
+import * as path from 'path';
 import commander = require('commander');
 import { 
   Program, Block, Compound, Assign, NoOp, Var, BinOp, Num, Type, 
@@ -131,4 +132,5 @@ const ast = parser.parse()
 const visualizer = new ASTVisualizer()
 visualizer.visit(ast)
 const dotText = visualizer.gendot()
-fs.writeFileSync('ast.dot', dotText)
+fs.writeFileSync(path.join(__dirname, '../gen/ast.dot'), dotText)
+
